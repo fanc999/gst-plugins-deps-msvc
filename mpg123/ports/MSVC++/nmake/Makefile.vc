@@ -18,7 +18,7 @@
 # into the lists we need for compilation and introspection
 !include create-lists-msvc.mak
 
-all: $(MPG123_LIB) $(OUT123_LIB) all-build-info
+all: $(BUILT_LIBS) all-build-info
 
 tests: all
 

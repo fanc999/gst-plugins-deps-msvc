@@ -12,11 +12,14 @@ BUILD_TYPE = static
 ASSEMBLY_OPT = no
 !endif
 
-!ifdef WASAPI
+!if defined (WASAPI)
 LIBOUT_BACKEND = win32 WASAPI
 !else
 !ifdef SDL
 LIBOUT_BACKEND = SDL2
+!endif
+!ifdef UWP
+LIBOUT_BACKEND = (not built)
 !endif
 !endif
 
@@ -84,6 +87,11 @@ help:
 	@echo Use SDL2 as the output backend of libout123.  WASAPI takes precendence
 	@echo over this if both are specified; with neither, the legacy winmm Win32
 	@echo backend will be utilized.
+	@echo.
+	@echo UWP:
+	@echo Make builds that are UWP compatible.  This will also imply WASAPI is
+	@echo enabled, and this will require Visual Studio 2015 or later, and
+	@echo libout123 will not be built
 	@echo ======
 	@echo A 'clean' target is supported to remove all generated files, intermediate
 	@echo object files and binaries for the specified configuration.

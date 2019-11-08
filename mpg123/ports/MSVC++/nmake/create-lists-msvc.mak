@@ -109,7 +109,7 @@ LIBMPG123_INT_SRCS = $(win32_asm_int_srcs)
 !if [for %c in (..\..\..\src\libout123\*.c) do @if not "%~nc" == "buffer" if not "%~nc" == "module" if not "%~nc" == "xfermem" @call create-lists.bat file libmpg123_objs.mak vs^$(VSVER)\^$(CFG)\^$(PLAT)\libout123\%~nc.obj]
 !endif
 
-!ifdef WASAPI
+!if defined (WASAPI) || defined (UWP)
 # Use WASAPI output
 !if [for %c in (..\..\..\src\libout123\modules\win32_wasapi.c) do @call create-lists.bat file libmpg123_objs.mak vs^$(VSVER)\^$(CFG)\^$(PLAT)\libout123\%~nc.obj]
 !endif
