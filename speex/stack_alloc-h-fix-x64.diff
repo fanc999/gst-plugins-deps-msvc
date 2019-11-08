@@ -1,0 +1,11 @@
+--- a/libspeex/stack_alloc.h	2015-07-06 23:01:58.000000000 +0800
++++ b/libspeex/stack_alloc.h	2019-11-08 23:06:21.227615600 +0800
+@@ -94,7 +94,7 @@
+ 
+ #else
+ 
+-#define ALIGN(stack, size) ((stack) += ((size) - (long)(stack)) & ((size) - 1))
++#define ALIGN(stack, size) ((stack) += ((size) - (size_t)(stack)) & ((size) - 1))
+ 
+ #define PUSH(stack, size, type) (ALIGN((stack),sizeof(type)),(stack)+=((size)*sizeof(type)),(type*)((stack)-((size)*sizeof(type))))
+ 
