@@ -1,0 +1,69 @@
+# NMake Makefile portion for enabling features for Windows builds
+
+# Optimizations
+OPT_FLAGS = /DOPT_GENERIC
+CFLAGS_FOR_DLL =
+
+YASM_BASE_FLAGS = -a x86 -p gas -r raw -g null
+
+!ifndef YASM
+YASM = yasm
+!endif
+
+!if "$(PLAT)" == "Win32"
+YASM_FLAGS = $(YASM_BASE_FLAGS) -f win32 -m x86
+!else
+YASM_FLAGS = $(YASM_BASE_FLAGS) -f win64 -m amd64
+!endif
+
+!ifndef STATIC
+CFLAGS_FOR_DLL = $(CFLAGS_FOR_DLL) /DBUILD_MPG123_DLL
+!endif
+
+!ifndef NO_ASM
+!if "$(PLAT)" == "Win32"
+OPT_FLAGS = $(OPT_FLAGS) /DOPT_MULTI /DOPT_I386 /DOPT_I586 /DOPT_MMX /DOPT_3DNOW /DOPT_3DNOWEXT /DOPT_SSE
+!else
+OPT_FLAGS = $(OPT_FLAGS) /DOPT_MULTI /DOPT_X86_64
+!endif
+!endif
+
+BASE_CFLAGS = /DWIN32 /D_CRT_SECURE_NO_WARNINGS /D_CRT_NONSTDC_NO_WARNINGS
+
+BASE_INCLUDES =					\
+	/I..	\
+	/I..\..\..\src	\
+	/I..\..\..\src\libmpg123	\
+	/I..\..\..\src\compat
+
+BASE_DEP_LIBS = shlwapi.lib
+
+LIBOUT123_EXTRA_CFLAGS = /DSTDOUT_FILENO=1 /DNOXFERMEM
+
+# For WASAPI support
+LIBOUT123_DEP_LIBS = $(BASE_DEP_LIBS)
+
+DLL_LD_FLAGS = $(LDFLAGS) /base:0x63000000
+
+LIBOUT123_INCLUDES = /I..\..\..\src\libout123 $(BASE_INCLUDES)
+
+!ifdef WASAPI
+LIBOUT123_EXTRA_CFLAGS = $(LIBOUT123_EXTRA_CFLAGS) /DDEFAULT_OUTPUT_MODULE=\"win32_wasapi\"
+LIBOUT123_DEP_LIBS = $(LIBOUT123_DEP_LIBS) avrt.lib ole32.lib
+!else
+!ifdef SDL
+LIBOUT123_EXTRA_CFLAGS = $(LIBOUT123_EXTRA_CFLAGS) /DDEFAULT_OUTPUT_MODULE=\"sdl\"
+LIBOUT123_DEP_LIBS = $(LIBOUT123_DEP_LIBS) sdl2.lib
+!else
+LIBOUT123_EXTRA_CFLAGS = $(LIBOUT123_EXTRA_CFLAGS) /DDEFAULT_OUTPUT_MODULE=\"win32\"
+LIBOUT123_DEP_LIBS = $(LIBOUT123_DEP_LIBS) winmm.lib
+!endif
+!endif
+
+# We build libmpg123 and libout123 at least
+MPG123_LIB = vs$(VSVER)\$(CFG)\$(PLAT)\libmpg123.lib
+OUT123_LIB = vs$(VSVER)\$(CFG)\$(PLAT)\libout123.lib
+
+# Put together the CFLAGS
+LIBMPG123_CFLAGS = $(BASE_CFLAGS) $(OPT_FLAGS) $(CFLAGS_FOR_DLL)
+LIBOUT123_CFLAGS = $(BASE_CFLAGS) $(CFLAGS_FOR_DLL) $(LIBOUT123_EXTRA_CFLAGS)
