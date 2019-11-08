@@ -1,0 +1,44 @@
+--- a/Makefile.MSVC	2019-11-08 11:58:52.247580300 +0800
++++ b/Makefile.MSVC	2019-11-08 11:55:19.233156800 +0800
+@@ -99,7 +99,11 @@
+ !	ENDIF
+ 
+ OFF = win32
++!	IF "$(MSVCVER)" == "Win64"
++MACHINE = /machine:x64
++!	else
+ MACHINE = /machine:I386
++!	endif
+ LIB_OPTS = /nologo $(MACHINE) 
+ 
+ !	MESSAGE ----------------------------------------------------------------------
+@@ -206,7 +210,7 @@
+ !	IF "$(MSVCVER)" == "Win64"
+ CC_OPTS = /nologo /DWin64 /O2b2ity /GAy /Gs1024 /Zp8 /GL /GS- /Zi
+ !	ELSEIF "$(MSVCVER)" == "8.0"
+-CC_OPTS = /nologo /O2 /Wp64 /Oi /GL /arch:SSE /fp:precise
++CC_OPTS = /nologo /O2 /Wp64 /Oi /GL /arch:SSE /fp:precise /Zi
+ !	ELSEif "$(CPU)"=="P6"
+ CC_OPTS = /nologo /O2 /Ob2 /GAy /Gs1024 /Zp8 /Zi
+ !else
+@@ -233,9 +237,9 @@
+ 
+ # temporary remove NDEBUG, see configure.in
+ #CC_OPTS = $(CC_OPTS) /DNDEBUG /MT
+-CC_OPTS = $(CC_OPTS) /MT
++CC_OPTS = $(CC_OPTS) /MD
+ 
+-LN_OPTS = /nologo /pdb:none
++LN_OPTS = /nologo /DEBUG
+ LN_DLL = /nologo /DLL
+ 
+ CC_OUT = /Fo
+@@ -544,7 +548,7 @@
+ .SUFFIXES : .nas
+ .nas.obj:
+ 	@echo $<
+-	@nasmw -f $(OFF) -i libmp3lame/i386/ -DWIN32 $< -o $@
++	@nasm -f $(OFF) -i libmp3lame/i386/ -DWIN32 $< -o $@
+ 
+ CC_SWITCHES = $(CC_SWITCHES) /DHAVE_NASM
+ ASM_OBJ = $(ASM_OBJ) \
