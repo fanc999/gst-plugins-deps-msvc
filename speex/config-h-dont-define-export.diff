@@ -1,0 +1,8 @@
+--- a/win32/config.h	2015-07-06 23:02:14.000000000 +0800
++++ b/win32/config.h	2019-11-08 19:34:33.672351000 +0800
+@@ -28,4 +28,4 @@
+ #endif
+ 
+ /* We don't support visibility on Win32 */
+-#define EXPORT
++/* #define EXPORT */
