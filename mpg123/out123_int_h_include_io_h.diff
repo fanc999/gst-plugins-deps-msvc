@@ -1,0 +1,13 @@
+--- a/src/libout123/out123_int.h	2019-10-26 15:06:17.000000000 +0800
++++ b/src/libout123/out123_int.h	2019-11-05 15:58:40.401085600 +0800
+@@ -16,6 +16,10 @@
+ #include "out123.h"
+ #include "module.h"
+ 
++#ifdef WIN32
++# include <io.h>
++#endif
++
+ #ifndef NOXFERMEM
+ #include "xfermem.h"
+ #endif
