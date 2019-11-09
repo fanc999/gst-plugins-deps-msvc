@@ -14,16 +14,10 @@ VORBIS_PSY_ENABLED = built
 VORBIS_PSY_ENABLED = not built
 !endif
 
-!ifdef NO_KISS_FFT
-KISS_FFT_ENABLED = not built
+!ifdef FIXED_POINT
+FFT_TYPE = fixed
 !else
-KISS_FFT_ENABLED = built
-!endif
-
-!ifdef NO_SMALL_FFT
-SMALL_FFT_ENABLED = not built
-!else
-SMALL_FFT_ENABLED = built
+FFT_TYPE = floating
 !endif
 
 !if "$(CFG)" == "release"
@@ -38,8 +32,7 @@ build-info-libspeex:
 	@echo Configuration for libspeex
 	@echo ==========================
 	@echo vorbis_psy: $(VORBIS_PSY_ENABLED)
-	@echo kiss_fft: $(KISS_FFT_ENABLED)
-	@echo small_fft: $(SMALL_FFT_ENABLED)
+	@echo FFT implementation: $(FFT_TYPE) point
 
 all-build-info: build-info-libspeex
 	@echo.
@@ -72,14 +65,20 @@ help:
 	@echo is specified, default libspeex DLLs are built with the KISS Fast
 	@echo Fourier Transform (FFT) and the OggVorbis FFT.
 	@echo ======
+	@echo NO_SSE:
+	@echo Disable SSE instructions in libspeex.  Ignored on x64 builds.
+	@echo.
+	@echo NO_SSE2:
+	@echo Disable SSE instructions in libspeex.  Ignored on x64 builds.
+	@echo.
+	@echo FIXED_POINT:
+	@echo Enable fixed point FFT in libspeex instead of floating point.
+	@echo Must be used with NO_SSE and NO_SSE2, and is not supported on
+	@echo x64 builds.
+	@echo.
 	@echo VORBIS:
-	@echo Build Vorbis psy model into libspeex
-	@echo.
-	@echo NO_KISS_FFT:
-	@echo Disable KISS Fast Fourier Transform (FFT) in libspeex
-	@echo.
-	@echo NO_SMALL_FFT:
-	@echo Disable FFT from OggVorbis in libspeex
+	@echo Build Vorbis psy model into libspeex.  Not supported with
+	@echo FIXED_POINT.
 	@echo.
 	@echo STATIC:
 	@echo Build static .lib versions of libspeex instead of DLLs.

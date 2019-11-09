@@ -49,17 +49,15 @@ NULL=
 
 !endif
 
-!ifndef NO_KISS_FFT
+!ifdef FIXED_POINT
 
-# Build kiss_fft sources
+# Build kiss_fft sources (fixed point fft)
 !if [for %c in (..\..\libspeex\kiss_fft.c ..\..\..\libspeex\kiss_fftr.c) do @call create-lists.bat file libspeex_objs.mak vs^$(VSVER)\^$(CFG)\^$(PLAT)\speex\%~nc.obj]
 !endif
 
-!endif
+!else
 
-!ifndef NO_SMALL_FFT
-
-# Build small_fft sources
+# Build small_fft sources (floating point fft)
 !if [for %c in (..\..\libspeex\smallft.c) do @call create-lists.bat file libspeex_objs.mak vs^$(VSVER)\^$(CFG)\^$(PLAT)\speex\%~nc.obj]
 !endif
 
