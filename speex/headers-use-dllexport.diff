@@ -1,23 +1,25 @@
---- a/include/speex/speex.h	2015-07-06 23:02:11.000000000 +0800
-+++ b/include/speex/speex.h	2019-11-08 18:58:40.124497600 +0800
-@@ -40,6 +40,16 @@
+--- a/include/speex/speex.h	2019-11-09 11:18:54.669136200 +0800
++++ b/include/speex/speex.h	2019-11-09 11:20:57.232122700 +0800
+@@ -40,6 +40,18 @@
   *  @{
   */
  
-+#if defined (SPEEX_STATIC) || !defined (_WIN32)
-+# define EXPORT
-+#else
-+# ifdef BUILDING_LIBSPEEX
-+#  define EXPORT __declspec (dllexport) extern
++#ifndef EXPORT
++# if defined (SPEEX_STATIC) || !defined (_WIN32)
++#  define EXPORT
 +# else
-+#  define EXPORT __declspec (dllimport) extern
++#  ifdef BUILDING_LIBSPEEX
++#   define EXPORT __declspec (dllexport) extern
++#  else
++#   define EXPORT __declspec (dllimport) extern
++#  endif
 +# endif
 +#endif
 +
  #include "speex_types.h"
  #include "speex_bits.h"
  
-@@ -299,10 +309,12 @@
+@@ -299,10 +311,12 @@
   * @param mode The mode to use (either speex_nb_mode or speex_wb.mode)
   * @return A newly created encoder state or NULL if state allocation fails
   */
@@ -30,7 +32,7 @@
  void speex_encoder_destroy(void *state);
  
  /** Uses an existing encoder state to encode one frame of speech pointed to by
-@@ -314,6 +326,7 @@
+@@ -314,6 +328,7 @@
   @param bits Bit-stream where the data will be written
   @return 0 if frame needs not be transmitted (DTX only), 1 otherwise
   */
@@ -38,7 +40,7 @@
  int speex_encode(void *state, float *in, SpeexBits *bits);
  
  /** Uses an existing encoder state to encode one frame of speech pointed to by
-@@ -323,6 +336,7 @@
+@@ -323,6 +338,7 @@
   @param bits Bit-stream where the data will be written
   @return 0 if frame needs not be transmitted (DTX only), 1 otherwise
   */
@@ -46,7 +48,7 @@
  int speex_encode_int(void *state, spx_int16_t *in, SpeexBits *bits);
  
  /** Used like the ioctl function to control the encoder parameters
-@@ -332,6 +346,7 @@
+@@ -332,6 +348,7 @@
   * @param ptr Data exchanged to-from function
   * @return 0 if no error, -1 if request in unknown, -2 for invalid parameter
   */
@@ -54,7 +56,7 @@
  int speex_encoder_ctl(void *state, int request, void *ptr);
  
  
-@@ -343,12 +358,14 @@
+@@ -343,12 +360,14 @@
   * @param mode Speex mode (one of speex_nb_mode or speex_wb_mode)
   * @return A newly created decoder state or NULL if state allocation fails
   */
@@ -69,7 +71,7 @@
  void speex_decoder_destroy(void *state);
  
  /** Uses an existing decoder state to decode one frame of speech from
-@@ -359,6 +376,7 @@
+@@ -359,6 +378,7 @@
   * @param out Where to write the decoded frame
   * @return return status (0 for no error, -1 for end of stream, -2 corrupt stream)
   */
@@ -77,7 +79,7 @@
  int speex_decode(void *state, SpeexBits *bits, float *out);
  
  /** Uses an existing decoder state to decode one frame of speech from
-@@ -369,6 +387,7 @@
+@@ -369,6 +389,7 @@
   * @param out Where to write the decoded frame
   * @return return status (0 for no error, -1 for end of stream, -2 corrupt stream)
   */
@@ -85,7 +87,7 @@
  int speex_decode_int(void *state, SpeexBits *bits, spx_int16_t *out);
  
  /** Used like the ioctl function to control the encoder parameters
-@@ -378,6 +397,7 @@
+@@ -378,6 +399,7 @@
   * @param ptr Data exchanged to-from function
   * @return 0 if no error, -1 if request in unknown, -2 for invalid parameter
   */
@@ -93,7 +95,7 @@
  int speex_decoder_ctl(void *state, int request, void *ptr);
  
  
-@@ -388,6 +408,7 @@
+@@ -388,6 +410,7 @@
   * @param ptr Data exchanged to-from function
   * @return 0 if no error, -1 if request in unknown, -2 for invalid parameter
   */
@@ -101,7 +103,7 @@
  int speex_mode_query(const SpeexMode *mode, int request, void *ptr);
  
  /** Functions for controlling the behavior of libspeex
-@@ -395,21 +416,23 @@
+@@ -395,21 +418,23 @@
   * @param ptr Data exchanged to-from function
   * @return 0 if no error, -1 if request in unknown, -2 for invalid parameter
   */
@@ -129,26 +131,28 @@
  const SpeexMode * speex_lib_get_mode (int mode);
  
  #ifndef WIN32
---- a/include/speex/speex_bits.h	2015-07-06 23:02:11.000000000 +0800
-+++ b/include/speex/speex_bits.h	2019-11-08 19:36:21.590100000 +0800
-@@ -41,6 +41,16 @@
+--- a/include/speex/speex_bits.h	2019-11-09 11:18:54.684760200 +0800
++++ b/include/speex/speex_bits.h	2019-11-09 11:21:11.772368300 +0800
+@@ -41,6 +41,18 @@
   *  @{
   */
  
-+#if defined (SPEEX_STATIC) || !defined (_WIN32)
-+# define EXPORT
-+#else
-+# ifdef BUILDING_LIBSPEEX
-+#  define EXPORT __declspec (dllexport) extern
++#ifndef EXPORT
++# if defined (SPEEX_STATIC) || !defined (_WIN32)
++#  define EXPORT
 +# else
-+#  define EXPORT __declspec (dllimport) extern
++#  ifdef BUILDING_LIBSPEEX
++#   define EXPORT __declspec (dllexport) extern
++#  else
++#   define EXPORT __declspec (dllimport) extern
++#  endif
 +# endif
 +#endif
 +
  #ifdef __cplusplus
  extern "C" {
  #endif
-@@ -59,24 +69,31 @@
+@@ -59,24 +71,31 @@
  } SpeexBits;
  
  /** Initializes and allocates resources for a SpeexBits struct */
@@ -180,7 +184,7 @@
  void speex_bits_read_from(SpeexBits *bits, const char *bytes, int len);
  
  /** Append bytes to the bit-stream
-@@ -85,6 +102,7 @@
+@@ -85,6 +104,7 @@
   * @param bytes pointer to the bytes what will be appended
   * @param len Number of bytes of append
   */
@@ -188,7 +192,7 @@
  void speex_bits_read_whole_bytes(SpeexBits *bits, const char *bytes, int len);
  
  /** Write the content of a bit-stream to an area of memory
-@@ -94,9 +112,11 @@
+@@ -94,9 +114,11 @@
   * @param max_len Maximum number of bytes to write (i.e. size of the "bytes" buffer)
   * @return Number of bytes written to the "bytes" buffer
  */
@@ -200,7 +204,7 @@
  int speex_bits_write_whole_bytes(SpeexBits *bits, char *bytes, int max_len);
  
  /** Append bits to the bit-stream
-@@ -104,6 +124,7 @@
+@@ -104,6 +126,7 @@
   * @param data Value to append as integer
   * @param nbBits number of bits to consider in "data"
   */
@@ -208,7 +212,7 @@
  void speex_bits_pack(SpeexBits *bits, int data, int nbBits);
  
  /** Interpret the next bits in the bit-stream as a signed integer
-@@ -112,6 +133,7 @@
+@@ -112,6 +135,7 @@
   * @param nbBits Number of bits to interpret
   * @return A signed integer represented by the bits read
   */
@@ -216,7 +220,7 @@
  int speex_bits_unpack_signed(SpeexBits *bits, int nbBits);
  
  /** Interpret the next bits in the bit-stream as an unsigned integer
-@@ -120,6 +142,7 @@
+@@ -120,6 +144,7 @@
   * @param nbBits Number of bits to interpret
   * @return An unsigned integer represented by the bits read
   */
@@ -224,7 +228,7 @@
  unsigned int speex_bits_unpack_unsigned(SpeexBits *bits, int nbBits);
  
  /** Returns the number of bytes in the bit-stream, including the last one even if it is not "full"
-@@ -127,6 +150,7 @@
+@@ -127,6 +152,7 @@
   * @param bits Bit-stream to operate on
   * @return Number of bytes in the stream
   */
@@ -232,7 +236,7 @@
  int speex_bits_nbytes(SpeexBits *bits);
  
  /** Same as speex_bits_unpack_unsigned, but without modifying the cursor position
-@@ -135,6 +159,7 @@
+@@ -135,6 +161,7 @@
   * @param nbBits Number of bits to look for
   * @return Value of the bits peeked, interpreted as unsigned
   */
@@ -240,7 +244,7 @@
  unsigned int speex_bits_peek_unsigned(SpeexBits *bits, int nbBits);
  
  /** Get the value of the next bit in the stream, without modifying the
-@@ -143,6 +168,7 @@
+@@ -143,6 +170,7 @@
   * @param bits Bit-stream to operate on
   * @return Value of the bit peeked (one bit only)
   */
@@ -248,7 +252,7 @@
  int speex_bits_peek(SpeexBits *bits);
  
  /** Advances the position of the "bit cursor" in the stream
-@@ -150,6 +176,7 @@
+@@ -150,6 +178,7 @@
   * @param bits Bit-stream to operate on
   * @param n Number of bits to advance
   */
@@ -256,7 +260,7 @@
  void speex_bits_advance(SpeexBits *bits, int n);
  
  /** Returns the number of bits remaining to be read in a stream
-@@ -157,6 +184,7 @@
+@@ -157,6 +186,7 @@
   * @param bits Bit-stream to operate on
   * @return Number of bits that can still be read from the stream
   */
@@ -264,7 +268,7 @@
  int speex_bits_remaining(SpeexBits *bits);
  
  /** Insert a terminator so that the data can be sent as a packet while auto-detecting
-@@ -164,6 +192,7 @@
+@@ -164,6 +194,7 @@
   *
   * @param bits Bit-stream to operate on
   */
@@ -272,7 +276,7 @@
  void speex_bits_insert_terminator(SpeexBits *bits);
  
  #ifdef __cplusplus
---- a/include/speex/speex_callbacks.h	2015-07-06 23:02:11.000000000 +0800
+--- a/include/speex/speex_callbacks.h	2019-11-09 11:18:54.684760200 +0800
 +++ b/include/speex/speex_callbacks.h	2019-11-08 10:29:23.068411900 +0800
 @@ -97,32 +97,41 @@
  } SpeexCallback;
@@ -316,7 +320,7 @@
  int speex_std_vbr_quality_request_handler(SpeexBits *bits, void *state, void *data);
  
  
---- a/include/speex/speex_header.h	2015-07-06 23:02:11.000000000 +0800
+--- a/include/speex/speex_header.h	2019-11-09 11:18:54.684760200 +0800
 +++ b/include/speex/speex_header.h	2019-11-08 18:59:15.232802900 +0800
 @@ -43,6 +43,16 @@
  
@@ -355,7 +359,7 @@
  void speex_header_free(void *ptr);
  
  #ifdef __cplusplus
---- a/include/speex/speex_stereo.h	2015-07-06 23:02:11.000000000 +0800
+--- a/include/speex/speex_stereo.h	2019-11-09 11:18:54.700408700 +0800
 +++ b/include/speex/speex_stereo.h	2019-11-08 10:29:06.337659900 +0800
 @@ -61,27 +61,35 @@
  #define SPEEX_STEREO_STATE_INIT {1,.5,1,1,0,0}
