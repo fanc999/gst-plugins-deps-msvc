@@ -1,0 +1,51 @@
+--- a/libspeex/vorbis_psy.c	2015-07-06 23:02:01.000000000 +0800
++++ b/libspeex/vorbis_psy.c	2019-11-09 11:09:17.369327900 +0800
+@@ -274,7 +274,7 @@
+   {
+     static int seq=0;
+ 
+-    float work2[n];
++    float *work2 = (float *)alloca(sizeof(float)*n);
+     for(i=0;i<n;i++){
+       work2[i]=logmask[i]+work[i];
+     }
+@@ -298,6 +298,10 @@
+ {
+   long i,j,lo=-99,hi=1;
+   VorbisPsy *p = speex_alloc(sizeof(VorbisPsy));
++  float a0 = .35875f;
++  float a1 = .48829f;
++  float a2 = .14128f;
++  float a3 = .01168f;
+   memset(p,0,sizeof(*p));
+ 
+   p->n = n;
+@@ -308,10 +312,6 @@
+ 
+   /* BH4 window */
+   p->window = speex_alloc(sizeof(*p->window)*n);
+-  float a0 = .35875f;
+-  float a1 = .48829f;
+-  float a2 = .14128f;
+-  float a3 = .01168f;
+   for(i=0;i<n;i++)
+     p->window[i] = //a0 - a1*cos(2.*M_PI/n*(i+.5)) + a2*cos(4.*M_PI/n*(i+.5)) - a3*cos(6.*M_PI/n*(i+.5));
+       sin((i+.5)/n * M_PI)*sin((i+.5)/n * M_PI);
+@@ -372,7 +372,7 @@
+ void compute_curve(VorbisPsy *psy, float *audio, float *curve)
+ {
+    int i;
+-   float work[psy->n];
++   float *work = (float *)alloca(sizeof(float) * psy->n);
+ 
+    float scale=4.f/psy->n;
+    float scale_dB;
+@@ -423,7 +423,7 @@
+ void curve_to_lpc(VorbisPsy *psy, float *curve, float *awk1, float *awk2, int ord)
+ {
+    int i;
+-   float ac[psy->n];
++   float *ac = (float *)alloca(sizeof(float) * psy->n);
+    float tmp;
+    int len = psy->n >> 1;
+    for (i=0;i<2*len;i++)
